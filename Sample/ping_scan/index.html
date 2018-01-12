@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link href="chosen.min.css" rel="stylesheet">
+    <title>Sample</title>
+    <script type="text/javascript">
+
+
+    </script>
+</head>
+
+<body>
+    <p>Hello World</p>
+    <form name="Scanner">
+
+
+        <script>
+            window.$ = window.jQuery = require('jquery');
+            const electron = require('electron');
+            const ipc = electron.ipcRenderer;
+            var options = {
+                target: '192.168.11.0/24'
+            };
+            // 非同期でレンダラープロセスからメインプロセスにメッセージを送信する
+            function runScanner() {
+                console.log("Start scan...");
+                document.getElementById("scanner_button").disabled = true;
+                options.target = document.Scanner.ipRange.value;
+                removeTargetMachine();
+                ipc.send('scanner-run', options);
+            };
+            function setTarget() {
+                console.log(document.Scanner.TargetMachineList.getElementsByTagName('option'));
+            };
+            function removeTargetMachine() {
+                var top = document.getElementById('selectTargetMachine');
+                while (top.firstChild) top.removeChild(top.firstChild);
+                var optElement = document.createElement("option");
+                optElement.setAttribute('value', '');
+                document.getElementById('selectTargetMachine').appendChild(optElement);
+            };
+            function addTargetMachine(ip) {
+                var optElement = document.createElement("option");
+                optElement.setAttribute('value', ip);
+                var contents = document.createTextNode(ip);
+                optElement.appendChild(contents);
+                document.getElementById('selectTargetMachine').appendChild(optElement);
+            }
+            ipc.on('scanner-done', function (event, response) {
+                console.log("scanner-done:");
+                console.log(response);
+                console.log(Array.isArray(response));
+                if (Array.isArray(response)) {
+                    for (let r of response) {
+                        if (r.live === true) {
+                            addTargetMachine(r.ip);
+                        }
+                    }
+                }
+                document.getElementById("scanner_button").disabled = false;
+            });
+        </script>
+        <script src="chosen.jquery.min.js" type="text/javascript"></script>
+        <p>
+            <label>IP Range:</label>
+            <input type="text" name="ipRange" size="30" maxlength="20">
+        </p>
+        <button onclick="runScanner()" id="scanner_button">Scan network</button>
+        <div>
+            <select name="TargetMachineList" data-placeholder="Choose a Target machine..." class="select" multiple tabindex="1" id="selectTargetMachine">
+                <option value=""></option>
+            </select>
+        </div>
+        <button onclick="SetTarget()" id="set_taregt">Set Target</button>
+    </form>
+</body>
+
+</html>

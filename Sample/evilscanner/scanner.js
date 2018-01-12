@@ -1,4 +1,4 @@
-var evilscan = require('evilscan');
+var evilscan = require('evilscan'); // https://www.npmjs.com/package/evilscan
 
 var defaultOptions = {
     target:'192.168.11.0/24',
