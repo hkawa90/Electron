@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sample</title>
+    <script src="codemirror.js"></script>
+    <link rel="stylesheet" href="lib/codemirror.css">
+    <script type="text/javascript">
+
+
+    </script>
+</head>
+
+<body>
+    <p>Run script</p>
+    <form name="ShellScript">
+        <script>
+            window.$ = window.jQuery = require('jquery');
+            const electron = require('electron');
+            const ipc = electron.ipcRenderer;
+            var options = {
+                script : ''
+            };
+            // 非同期でレンダラープロセスからメインプロセスにメッセージを送信する
+            function runScript() {
+                console.log("Start scan...");
+                document.getElementById("Run_script").disabled = true;
+                options.target = document.ShellScript.script.value;
+                ipc.send('run_script', options);
+            };
+            ipc.on('script-done', function (event, response) {
+                console.log("script-done:");
+                console.log(response);
+
+                document.getElementById("Run_script").disabled = false;
+            });
+            var myCodeMirror = CodeMirror(document.getElementById("Shell_result"));
+        </script>
+        <p>
+            <label>Shell Script:</label>
+            <input type="text" name="script" size="30" maxlength="20">
+        </p>
+        <button onclick="runScript()" id="Run_script">Run script</button>
+        <div id="Shell_result"></div>
+    </form>
+</body>
+
+</html>
