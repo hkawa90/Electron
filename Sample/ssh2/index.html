@@ -57,11 +57,6 @@
                 options: '',
                 cmd: 'run'
             };
-            // test
-            args.server.host = '192.168.170.3';
-            args.server.username = 'kawa90';
-            args.server.password = 'k9025247';
-            args.execCmd = 'while true ;do date ; sleep 10; done';
             ipc.send('run_script', args);
         };
         function stopScript() {
