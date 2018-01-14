@@ -41,6 +41,10 @@ ipc.on('run_script', function (event, arg) {
     forked.send(arg);
 });
 
+ipc.on('stop_script', function (event, arg) {
+    forked.send(arg);
+});
+
 forked.on('message', (msg) => {
     console.log(msg);
     if ((msg.status === 'abort') || (msg.status === 'close')) {
