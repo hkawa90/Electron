@@ -5,45 +5,73 @@
     <meta charset="UTF-8">
     <title>Sample</title>
     <script src="codemirror.js"></script>
-    <link rel="stylesheet" href="lib/codemirror.css">
+    <link rel="stylesheet" href="codemirror.css">
     <script type="text/javascript">
-
-
     </script>
 </head>
 
 <body>
     <p>Run script</p>
     <form name="ShellScript">
-        <script>
-            window.$ = window.jQuery = require('jquery');
-            const electron = require('electron');
-            const ipc = electron.ipcRenderer;
-            var options = {
-                script : ''
-            };
-            // 非同期でレンダラープロセスからメインプロセスにメッセージを送信する
-            function runScript() {
-                console.log("Start scan...");
-                document.getElementById("Run_script").disabled = true;
-                options.target = document.ShellScript.script.value;
-                ipc.send('run_script', options);
-            };
-            ipc.on('script-done', function (event, response) {
-                console.log("script-done:");
-                console.log(response);
-
-                document.getElementById("Run_script").disabled = false;
-            });
-            var myCodeMirror = CodeMirror(document.getElementById("Shell_result"));
-        </script>
+        <div>
+            <label>IP Address:</label>
+            <input type="text" name="ip" size="20" maxlength="15">
+            <label>User Name:</label>
+            <input type="text" name="username" size="30" maxlength="20">
+            <label>Passsword:</label>
+            <input type="password" name="password" size="30" maxlength="20">
+        </div>
         <p>
             <label>Shell Script:</label>
             <input type="text" name="script" size="30" maxlength="20">
         </p>
+        <div>
         <button onclick="runScript()" id="Run_script">Run script</button>
-        <div id="Shell_result"></div>
+        </div>
+        <div>
+        <textarea id="Shell_result"></textarea>
+    </div>
     </form>
+    <script>
+        window.$ = window.jQuery = require('jquery');
+        const electron = require('electron');
+        const ipc = electron.ipcRenderer;
+        var server = {
+            host: '192.168.170.3',
+            port: 22,
+            username: 'kawa90',
+            password: ''
+        };
+        // 非同期でレンダラープロセスからメインプロセスにメッセージを送信する
+        function runScript() {
+            console.log("Start scan...");
+            document.getElementById("Run_script").disabled = true;
+            var args = {
+                server: {
+                    host: document.ShellScript.ip.value,
+                    username: document.ShellScript.username.value,
+                    password: document.ShellScript.password.value
+                },
+                execCmd: document.ShellScript.script.value,
+                options: ''
+            };
+            ipc.send('run_script', args);
+        };
+        ipc.on('script-done', function (event, response) {
+            console.log("script-done:");
+            console.log(response);
+
+            document.getElementById("Run_script").disabled = false;
+        });
+        ipc.on('script-result', function (event, response) {
+            console.log("script-result:");
+            console.log(response);
+            editor.setValue(editor.getValue() + response.strings);
+        });
+        var editor = CodeMirror.fromTextArea(document.getElementById("Shell_result"), {
+            lineNumbers: false, readOnly: true
+        });
+    </script>
 </body>
 
 </html>

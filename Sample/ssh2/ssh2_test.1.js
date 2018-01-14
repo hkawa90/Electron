@@ -17,7 +17,7 @@ var promptChgCmd = 'export PS1=';
 var conn = new Client();
 conn.on('ready', function () {
     console.log('Client :: ready');
-    conn.exec('uptime', function (err, stream) {
+    conn.exec("TERM=xterm;"+ttyTestCmd, {pty: true}, function (err, stream) {
         var reader = require('readline').createInterface({ input: stream });
         if (err) throw err;
         reader.on('line', function (data) { console.log('READLINE:' + data) });

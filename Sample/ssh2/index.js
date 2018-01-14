@@ -9,11 +9,7 @@ const BrowserWindow = electron.BrowserWindow;
 const ipc = electron.ipcMain;
 // crate child process for evilscan scanner
 const { fork } = require('child_process');
-const forked = fork('scanner.js');
-
-var defaultOptions = {
-    target: '192.168.11.0/24'
-};
+const forked = fork('ssh2_runner.js');
 
 // メインウィンドウはGCされないようにグローバル宣言
 let mainWindow;
@@ -41,27 +37,17 @@ app.on('ready', function () {
     });
 });
 
-ipc.on('scanner-run', function (event, arg) {
-    scanner_result = [];
-    if (arg === null) {
-        console.log('select default option.');
-        forked.send(defaultOptions);
-    } else {
-        console.log('select arg');
-        forked.send(arg);
-    }
-    
+ipc.on('run_script', function (event, arg) {
+    forked.send(arg);
 });
 
 forked.on('message', (msg) => {
     console.log(msg);
-    if (msg.processStatus == 'exit') {
-        scanner_result.push(msg);
-        mainWindow.webContents.send('scanner-done', scanner_result);
+    if ((msg.status === 'abort') || (msg.status === 'close')) {
+        mainWindow.webContents.send('script-done', '');
     } else {
-        scanner_result.push(msg);
-        //console.log(msg);
-        //console.log(scanner_result);
+        mainWindow.webContents.send('script-result', msg);
+        console.log(msg);
     }
 });
 
