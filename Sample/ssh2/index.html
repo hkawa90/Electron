@@ -26,7 +26,8 @@
             <input type="text" name="script" size="30" maxlength="20">
         </p>
         <div>
-        <button onclick="runScript()" id="Run_script">Run script</button>
+        <button type="button" onclick="runScript()" id="Run_script">Run script</button>
+        <button type="button" onclick="stopScript()" id="Stop_script">Stop script</button>
         </div>
         <div>
         <textarea id="Shell_result"></textarea>
@@ -53,9 +54,21 @@
                     password: document.ShellScript.password.value
                 },
                 execCmd: document.ShellScript.script.value,
-                options: ''
+                options: '',
+                cmd: 'run'
             };
+            // test
+            args.server.host = '192.168.170.3';
+            args.server.username = 'kawa90';
+            args.server.password = 'k9025247';
+            args.execCmd = 'while true ;do date ; sleep 10; done';
             ipc.send('run_script', args);
+        };
+        function stopScript() {
+            console.log("Stop script...");
+            //document.getElementById("Stop_script").disabled = true;
+            var args = {cmd : 'stop'};
+            ipc.send('stop_script', args);
         };
         ipc.on('script-done', function (event, response) {
             console.log("script-done:");
