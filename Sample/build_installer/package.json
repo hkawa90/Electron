@@ -1,0 +1,55 @@
+{
+  "name": "build_installer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "output": "installer"
+  },
+  "build": {
+    "appId": "yourappid",
+    "productName" : "helloworld",
+    "copyright" : "Copyright © 2018 ${author}",
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "win": {
+      "target": "NSIS",
+      "icon": "assets/win/Globe"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "del /Q .\\dist",
+    "clean:osx": "del /Q .\\dist\\osx",
+    "clean:win": "del /Q .\\dist\\win",
+    "build": "npm run clean && npm run build:osx && npm run build:win",
+    "build:osx": "npm run clean:osx && electron-packager ./app \"hello-world\" --out=dist/osx --platform=darwin --arch=x64 --electron-version=1.8.1 --icon=assets/osx/loopline.icns --overwrite",
+    "build:win": "npm run clean:win && electron-packager ./app \"hello-world\" --out=dist/win --platform=win32 --arch=ia32 --electron-version=1.8.1 --icon=assets/win/Globe.ico --overwrite",
+    "build:win64": "npm run clean:win && electron-packager ./app \"hello-world\" --out=dist/win --platform=win32 --arch=x64 --electron-version=1.8.1 --icon=assets/win/Globe.ico --overwrite",
+    "pack": "npm run pack:osx && npm run pack:win",
+    "pack:osx": "npm run build:osx && electron-builder \"dist/osx/hello-world.app\" --mac",
+    "pack:win": "npm run build:win && electron-builder \"dist/win/hello-world-win32-ia32\" --win --ia32",
+    "pack:win64": "npm run build:win64 && electron-builder \"dist/win/hello-world-win32-ia64\" --win --x64"
+  },
+  "keywords": [],
+  "author": "Hideo Kawamura",
+  "license": "ISC"
+}
