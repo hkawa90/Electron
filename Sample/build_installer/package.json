@@ -33,8 +33,13 @@
     "win": {
       "target": "NSIS",
       "icon": "assets/win/Globe"
+    },
+    "nsis" : {
+      "allowToChangeInstallationDirectory" : true,
+      "oneClick" : false
     }
   },
+
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "del /Q .\\dist",
