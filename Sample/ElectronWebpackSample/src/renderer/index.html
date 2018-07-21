@@ -1,0 +1,63 @@
+<html>
+
+<head>
+  <title>SSH Terminal</title>
+  
+  <style>
+    body {
+      font-family: helvetica, sans-serif, arial;
+      font-size: 1em;
+      color: #111;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    #terminal-container {
+      width: 960px;
+      height: 600px;
+      margin: 0 auto;
+      padding: 2px;
+    }
+
+    #terminal-container .terminal {
+      background-color: #111;
+      color: #fafafa;
+      padding: 2px;
+    }
+
+    #terminal-container .terminal:focus .terminal-cursor {
+      background-color: #fafafa;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="terminal-container"></div>
+  <dialog id="account">
+    <form method="dialog" name="SSH_Connection_Form">
+      <p>
+        <label>Host :
+          <input type="text" name="host">
+        </label>
+      </p>
+      <p>
+        <label>User Name:
+          <input type="text" name="username">
+        </label>
+      </p>
+      <p>
+        <label>Password :
+          <input type="password" name="password">
+        </label>
+      </p>
+      <menu>
+        <button id="cancel" type="reset">Cancel</button>
+        <button id="submit" type="submit">Confirm</button>
+      </menu>
+    </form>
+  </dialog>
+</body>
+
+</html>

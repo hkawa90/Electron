@@ -1,0 +1,9 @@
+{
+  "name": "ElectronSampleApp",
+  "version": "1.0.0",
+  "description": "Electron Sample App",
+  "main": "index.js",
+  "keywords": [],
+  "author": "hkawa90",
+  "license": "ISC"
+}

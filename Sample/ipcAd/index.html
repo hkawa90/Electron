@@ -1,0 +1,63 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>The HTML5 Sample</title>
+    <meta name="description" content="The HTML5 Sample">
+    <meta name="author" content="unknown">
+
+    <link rel="stylesheet" href="">
+
+    <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+    <script>
+        const electron = require('electron')
+        const ipc = electron.ipcRenderer
+
+        const EventEmitter = require("events").EventEmitter;
+        class DataReceiver extends EventEmitter {
+
+            static startReceiveIpc() {
+                ipc.on('data', DataReceiver.instance.func)
+            }
+            static stopReceiveIpc() {
+                ipc.off('data', DataReceiver.instance.func);
+            }
+            constructor() {
+                if (typeof DataReceiver.instance === "object") {
+                    console.log('DataReceiver exist')
+                    return DataReceiver.instance;
+                }
+                super()
+                this.func = function (event, response) {
+                    console.log("ipc receive")
+                    console.log(response.type, response.values)
+                    console.log('ipc receive callback:', this)
+                    //var ret = this.emit(response.type, response.values)
+                    var ret = DataReceiver.instance.emit('ping', response.values)
+                    console.log('emit:' + ret)
+                }
+                DataReceiver.instance = this
+                DataReceiver.startReceiveIpc()
+                console.log(window.DataReceiver)
+            }
+            on(eventName, listener) {
+                console.log(eventName, listener)
+                super.on(eventName, listener)
+            }
+        }
+        var d1 = new DataReceiver()
+        d1.on('ping', function(response) {
+            console.log('PING event:' + response.key + ' ' + response.value)
+        })
+    </script>
+</body>
+
+</html>
