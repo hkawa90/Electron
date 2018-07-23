@@ -4,6 +4,10 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
 
+const commonConfig = {
+    devtool: 'inline-source-map'
+};
+
 const mainConfig = {
     entry: './src/main/index.js',
     output: {
@@ -79,5 +83,5 @@ module.exports = env => {
     } else {
         mainConfig.mode = rendererConfig.mode = 'development';
     }
-    return merge(mainConfig, rendererConfig);
+    return merge(commonConfig, mainConfig, rendererConfig);
 }
